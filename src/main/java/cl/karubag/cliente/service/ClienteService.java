@@ -4,6 +4,8 @@ import cl.karubag.cliente.dto.ClienteDTO;
 import cl.karubag.cliente.model.Cliente;
 import cl.karubag.cliente.model.TipoCliente;
 import cl.karubag.cliente.repository.ClienteRepository;
+import cl.karubag.cliente.exception.ResourceNotFoundException; 
+import cl.karubag.cliente.exception.DuplicateResourceException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,13 +49,13 @@ public class ClienteService {
 
     public ClienteDTO obtenerPorId(Long id) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
         return toDTO(cliente);
     }
 
     public ClienteDTO crear(ClienteDTO dto) {
         if (clienteRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Ya existe un cliente con el email: " + dto.getEmail());
+            throw new DuplicateResourceException("Ya existe un cliente con el email: " + dto.getEmail());
         }
         return toDTO(clienteRepository.save(toEntity(dto)));
     }
