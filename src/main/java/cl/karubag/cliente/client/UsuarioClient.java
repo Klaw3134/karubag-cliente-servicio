@@ -17,7 +17,7 @@ public class UsuarioClient {
     public boolean existeUsuario(Long usuarioId) {
         try {
             webClient.get()
-                    .uri("/api/usuarios/" + usuarioId)
+                    .uri("/api/v1/usuarios/" + usuarioId)
                     .retrieve()
                     .bodyToMono(Object.class)
                     .block();
