@@ -6,6 +6,8 @@ import cl.karubag.cliente.model.TipoCliente;
 import cl.karubag.cliente.repository.ClienteRepository;
 import cl.karubag.cliente.exception.ResourceNotFoundException; 
 import cl.karubag.cliente.exception.DuplicateResourceException;
+import cl.karubag.cliente.client.UsuarioClient;
+import cl.karubag.cliente.client.PlanClient;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,10 +16,16 @@ import java.util.stream.Collectors;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final UsuarioClient usuarioClient;
+    private final PlanClient planClient;
 
-    public ClienteService(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
-    }
+public ClienteService(ClienteRepository clienteRepository,
+                    UsuarioClient usuarioClient,
+                    PlanClient planClient) {
+    this.clienteRepository = clienteRepository;
+    this.usuarioClient = usuarioClient;
+    this.planClient = planClient;
+}
 
     public List<ClienteDTO> listarTodos() {
         return clienteRepository.findAll()
@@ -54,6 +62,15 @@ public class ClienteService {
     }
 
     public ClienteDTO crear(ClienteDTO dto) {
+        // ===== VALIDACIONES CRUZADAS via WebClient =====
+        if (!usuarioClient.existeUsuario(dto.getUsuarioId())) {
+            throw new ResourceNotFoundException(
+                "No existe el usuario con id " + dto.getUsuarioId() + " en usuario-servicio");
+        }
+        if (!planClient.existePlan(dto.getPlanId())) {
+            throw new ResourceNotFoundException(
+                "No existe el plan con id " + dto.getPlanId() + " en plan-servicio");
+        }
         if (clienteRepository.existsByEmail(dto.getEmail())) {
             throw new DuplicateResourceException("Ya existe un cliente con el email: " + dto.getEmail());
         }
@@ -62,7 +79,7 @@ public class ClienteService {
 
     public ClienteDTO actualizar(Long id, ClienteDTO dto) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
+               .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
         cliente.setNombreCompleto(dto.getNombreCompleto());
         cliente.setEmail(dto.getEmail());
         cliente.setTelefono(dto.getTelefono());
