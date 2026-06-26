@@ -11,6 +11,6 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("Cliente Servicio API")
                         .version("1.0")
-                        .description("API de gestión de clientes Karübag"));
+                        .description("API de gestion de clientes Karübag"));
     }
 }

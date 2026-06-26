@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@Tag(name = "Clientes", description = "Gestión de clientes Karübag")
+@Tag(name = "Clientes", description = "Gestion de clientes Karübag")
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
@@ -48,7 +48,7 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.listarPorTipo(tipo));
     }
 
-    @Operation(summary = "Listar por plan", description = "Retorna clientes de un plan específico")
+    @Operation(summary = "Listar por plan", description = "Retorna clientes de un plan especifico")
     @ApiResponse(responseCode = "200", description = "Lista de clientes por plan")
     @GetMapping("/plan/{planId}")
     public ResponseEntity<List<ClienteDTO>> listarPorPlan(@PathVariable Long planId) {
