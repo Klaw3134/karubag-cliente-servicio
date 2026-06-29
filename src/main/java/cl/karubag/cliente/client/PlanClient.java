@@ -10,7 +10,7 @@ public class PlanClient {
 
     public PlanClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
-                .baseUrl("http://localhost:8082")
+                .baseUrl("https://karubag-plan-servicio.onrender.com")
                 .build();
     }
 
